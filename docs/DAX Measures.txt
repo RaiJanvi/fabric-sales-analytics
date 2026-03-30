@@ -1,0 +1,27 @@
+-- 1. Total Revenue
+Total Revenue = SUM(gold_fact_sales[revenue])
+
+-- 2. Total Orders
+Total Orders = DISTINCTCOUNT(gold_fact_sales[SalesOrderID])
+
+-- 3. Avg Order Value
+Avg Order Value = DIVIDE((SUM(gold_fact_sales[revenue])), (DISTINCTCOUNT(gold_fact_sales[SalesOrderID])))
+
+-- 4. Gross Profit
+Gross Profit = SUM(gold_fact_sales[gross_profit])
+
+-- 5. Gross Margin %
+Gross Margin % = DIVIDE((SUM(gold_fact_sales[gross_profit])), (SUM(gold_fact_sales[revenue])))
+
+-- 6. Revenue YoY %
+Revenue YoY % =
+VAR Curr = SUM(gold_fact_sales[revenue])
+VAR Prior = CALCULATE(Curr, SAMEPERIODLASTYEAR(gold_dim_date[date]))
+RETURN DIVIDE(Curr - Prior, Prior)
+
+-- 7. Revenue at Historic Price
+Revenue at Historic Price =
+SUMX(
+    gold_fact_sales,
+    gold_fact_sales[OrderQty] * gold_fact_sales[list_price_at_sale]
+)
